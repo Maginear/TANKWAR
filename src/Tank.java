@@ -281,7 +281,7 @@ public class Tank {
  		this.live = live;
 	}
 	
-	 public Rectangle getRect(){
+	public Rectangle getRect(){
    	  return new Rectangle(tank_x, tank_y, WIDTH, HEIGHT);
      }
 	 
