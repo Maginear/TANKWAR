@@ -222,7 +222,7 @@ public class Tank {
 	}
 
 	private void fire(){
-		 if(BulletNum <= 2){
+		 if(BulletNum <= 4){
 				Bullet b = new Bullet(this, tc);
 				BulletNum++;
 				new Thread(b).start();
@@ -263,14 +263,13 @@ public class Tank {
 		public void run(){
 			while (true) {
 				try {
-					Thread.sleep(500);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				BulletNum = 0;
 				if(!bePlayerTank && live){
-					if(r.nextInt(40) > 30)
 					fire();
 				}
 			}
@@ -289,6 +288,7 @@ public class Tank {
 	
 		for (int a = 0; a < tc.tanks.size(); a++) {
 			if (this.getRect().intersects(tc.tanks.get(a).getRect())) {
+				System.out.println("sssssss");
 				return true;
 
 			}

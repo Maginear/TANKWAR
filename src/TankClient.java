@@ -23,8 +23,8 @@ public class TankClient extends Frame {
         tc.launchFrame();
 	}
 	
-	private void launchFrame() {
-		for (int i = 0; i < 10; i++) {
+	public void launchFrame() {
+		for (int i = 0; i < 2; i++) {
 			tanks.add(new Tank((int) ((frameWidth - 5 - Tank.WIDTH) * Math.random()) + 5,
 					(int) ((frameHeight - 30 - Tank.HEIGHT)* Math.random() + 30) , false, this));
 		}
