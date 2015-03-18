@@ -14,7 +14,8 @@ public class Tank {
     public static final int HEIGHT = 50;
     private static final int SPEED = 5;
     private int BulletNum;
-    private boolean bePlayerTank; 
+    private int step = 0; 
+    public boolean bePlayerTank; 
     private boolean live = true; 
     
     private boolean bL = false, bU = false, bR = false, bD = false;
@@ -22,8 +23,7 @@ public class Tank {
     Direction dir = Direction.STOP;
     Direction ptDir = Direction.R;
     
-    ArrayList<Integer> oldKeyss = new ArrayList<Integer>();
-  
+    ArrayList<Integer> oldKey = new ArrayList<Integer>();
   
     private static Random r = new Random(); 
     public TankClient tc;
@@ -74,7 +74,7 @@ public class Tank {
 		}
 		move();
 	}
-		else tc.tanks.remove(this);
+		else 	tc.tanks.remove(this);
 }	
 	
 	private void move(){
@@ -118,8 +118,14 @@ public class Tank {
 		if(tank_y + HEIGHT > TankClient.frameHeight - 5) tank_y = TankClient.frameHeight - HEIGHT - 5;
 	    
 		if(!bePlayerTank){
-		Direction[] dire = Direction.values();
-		dir = dire[r.nextInt(dire.length)];
+			Direction[] dire = Direction.values();
+			if(step == 0){
+				do {
+					ptDir = dir = dire[r.nextInt(dire.length)];
+				} while (dir == Direction.STOP);
+		        step = r.nextInt(12) + 3;   
+			}
+			step--;
 		}
 	}
 	
@@ -128,23 +134,23 @@ public class Tank {
 		switch (Key) {
 		case KeyEvent.VK_RIGHT:
 			bR = false;
-			oldKeyss.remove(new Integer(Key));
-			System.out.println(oldKeyss.size());
+			oldKey.remove(new Integer(Key));
+			System.out.println(oldKey.size());
 			break;
 		case KeyEvent.VK_LEFT:
 			bL = false;
-			oldKeyss.remove(new Integer(Key));
-			System.out.println(oldKeyss.size());
+			oldKey.remove(new Integer(Key));
+			System.out.println(oldKey.size());
 			break;
 		case KeyEvent.VK_UP:
 			bU = false;
-			oldKeyss.remove(new Integer(Key));
-			System.out.println(oldKeyss.size());
+			oldKey.remove(new Integer(Key));
+			System.out.println(oldKey.size());
 			break;
 		case KeyEvent.VK_DOWN:
 			bD = false;
-			oldKeyss.remove(new Integer(Key));
-			System.out.println(oldKeyss.size());
+			oldKey.remove(new Integer(Key));
+			System.out.println(oldKey.size());
 			break;
 	
 		}
@@ -153,8 +159,8 @@ public class Tank {
 	
 	private boolean isOldKey(int i){
 		boolean flag = false;
-		for(int a = 0; a < oldKeyss.size(); a++){
-			if(i == oldKeyss.get(a)){
+		for(int a = 0; a < oldKey.size(); a++){
+			if(i == oldKey.get(a)){
 				flag = true;
 			}
 		}
@@ -163,27 +169,27 @@ public class Tank {
 	
 	public void KeyPressed(KeyEvent e){
 		int Key = e.getKeyCode();
-			if (!isOldKey(Key) && oldKeyss.size() <= 2) {
+			if (!isOldKey(Key) && oldKey.size() <= 2) {
 				switch (Key) {
 				case KeyEvent.VK_RIGHT:
 					bR = true;
-					oldKeyss.add(Key); 
-					System.out.println(oldKeyss.size());
+					oldKey.add(Key); 
+					System.out.println(oldKey.size());
 					break;
 				case KeyEvent.VK_LEFT:
 					bL = true;
-					oldKeyss.add(Key);
-					System.out.println(oldKeyss.size());
+					oldKey.add(Key);
+					System.out.println(oldKey.size());
 					break;
 				case KeyEvent.VK_UP:
 					bU = true;
-					oldKeyss.add(Key);
-					System.out.println(oldKeyss.size());
+					oldKey.add(Key);
+					System.out.println(oldKey.size());
 					break;
 				case KeyEvent.VK_DOWN:
 					bD = true;
-					oldKeyss.add(Key);
-					System.out.println(oldKeyss.size());
+					oldKey.add(Key);
+					System.out.println(oldKey.size());
 					break;
 					
 					
@@ -216,7 +222,7 @@ public class Tank {
 	}
 
 	private void fire(){
-		 if(BulletNum <= 2){
+		 if(BulletNum <= 4){
 				Bullet b = new Bullet(this, tc);
 				BulletNum++;
 				new Thread(b).start();
@@ -257,12 +263,15 @@ public class Tank {
 		public void run(){
 			while (true) {
 				try {
-					Thread.sleep(500);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				BulletNum = 0;
+				if(!bePlayerTank && live){
+					fire();
+				}
 			}
 		}
 	}
@@ -275,13 +284,16 @@ public class Tank {
    	  return new Rectangle(tank_x, tank_y, WIDTH, HEIGHT);
      }
 	 
-	 
-	 public  boolean  isMeetTanks(){
-		 for(int a = 0; a < tc.tanks.size(); a++){
-			 if(this.getRect().intersects(tc.tanks.get(a).getRect())){
-				 return true;
-			 }
-		 }
+    /*public  boolean  isMeetTanks(){
+	
+		for (int a = 0; a < tc.tanks.size(); a++) {
+			if (this.getRect().intersects(tc.tanks.get(a).getRect())) {
+				System.out.println("sssssss");
+				return true;
+
+			}
+		}
+		
 		 return false;
-	 }
+	 }*/
 }

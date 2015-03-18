@@ -19,13 +19,12 @@ public class TankClient extends Frame {
     ArrayList<Explode> explodes = new ArrayList<Explode>();
     
 	public static void main(String[] args) {
-		// TODO 自动生成的方法存根
 		TankClient tc = new TankClient();
         tc.launchFrame();
 	}
 	
 	public void launchFrame() {
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 2; i++) {
 			tanks.add(new Tank((int) ((frameWidth - 5 - Tank.WIDTH) * Math.random()) + 5,
 					(int) ((frameHeight - 30 - Tank.HEIGHT)* Math.random() + 30) , false, this));
 		}

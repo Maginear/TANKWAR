@@ -19,7 +19,7 @@ public class Explode {
       
       public void drawMe(Graphics g){
     	  if(!live) return;
-    	  //Transfome the Chinaese into English
+    	  
     	  if(step == diament.length){
     		  live = false;
     		  tc.explodes.remove(this);

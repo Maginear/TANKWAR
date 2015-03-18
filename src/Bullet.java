@@ -107,16 +107,25 @@ public class Bullet implements Runnable{
 	}
 	
 	public boolean isHitTanks() {
-		for (int a = 0; a < tc.tanks.size(); a++) {
-              if(this.isHitTank(tc.tanks.get(a))){
-            	  this.live = false;
-            	  tank.tc.bullets.remove(this);
-            	  exp = new Explode(this, tc);
-            	  tc.explodes.add(exp);
-            	  return true;
-              }
+		if (tank.bePlayerTank) {
+			for (int a = 0; a < tc.tanks.size(); a++) {
+				if (this.isHitTank(tc.tanks.get(a))) {
+					this.live = false;
+					tank.tc.bullets.remove(this);
+					exp = new Explode(this, tc);
+					tc.explodes.add(exp);
+					return true;
+				}
+				
+			}
+			return false;
 		}
-		return false;
-
+		else {
+			if (this.getRect().intersects(tc.myTank.getRect())) {
+				tc.myTank.setLive(false);
+				return true;
+			}
+			return false;
+		}
 	}
 }
