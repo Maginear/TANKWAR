@@ -6,7 +6,7 @@ public class Explode {
       private int explode_x, explode_y;
       Bullet b;
       TankClient tc;
-      int[] diament = {3, 13, 18, 28, 30, 18, 13, 5, 2};
+      int[] diament = {3, 13, 15, 18, 25, 28, 35, 20, 18, 13, 5, 2};
       int step = 0;
       private boolean live = true;
     		  
@@ -22,6 +22,7 @@ public class Explode {
     	  //Transfome the Chinaese into English
     	  if(step == diament.length){
     		  live = false;
+    		  tc.explodes.remove(this);
     		  return;
     	  }
     	  

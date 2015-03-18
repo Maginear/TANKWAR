@@ -14,7 +14,7 @@ public class Bullet implements Runnable{
 	  private static final int SPEED = 3;
 	  private boolean live = true;
 	  private Explode exp;
-	  
+	  static int i = 0;	  
 	  public Bullet(Tank tank, TankClient tc){
 		  this.dir = tank.ptDir;
 		  this.tank = tank;
@@ -70,7 +70,7 @@ public class Bullet implements Runnable{
 			
 			if(bullet_x < 0 || bullet_y < 0 || bullet_x > TankClient.frameWidth || bullet_y > TankClient.frameHeight){
 				live = false;
-				tank.bullets.remove(this);
+				tank.tc.bullets.remove(this);
 			}
 	  }
 	  
@@ -87,6 +87,7 @@ public class Bullet implements Runnable{
 		}
 		else{
 			exp.drawMe(g);
+			System.out.println(i++);
 		}
 		
 	}
@@ -109,8 +110,9 @@ public class Bullet implements Runnable{
 		for (int a = 0; a < tc.tanks.size(); a++) {
               if(this.isHitTank(tc.tanks.get(a))){
             	  this.live = false;
-            	  tank.bullets.remove(this);
+            	  tank.tc.bullets.remove(this);
             	  exp = new Explode(this, tc);
+            	  tc.explodes.add(exp);
             	  return true;
               }
 		}

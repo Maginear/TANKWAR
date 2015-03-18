@@ -15,6 +15,8 @@ public class TankClient extends Frame {
     public static final int frameHeight = 700;
     Tank myTank = new Tank(40, 100, true, this);
     List<Tank> tanks = new ArrayList<Tank>();
+    ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+    ArrayList<Explode> explodes = new ArrayList<Explode>();
     
 	public static void main(String[] args) {
 		// TODO 自动生成的方法存根
@@ -75,12 +77,21 @@ public class TankClient extends Frame {
 	}
  
     public void paint(Graphics g) {
+    	myTank.drawMe(g);
+    	
     	g.drawString("Tank    conut: " + tanks.size(), 40, 60);
-    	g.drawString("Bullet  count: " + myTank.bullets.size(), 40, 75);
-		myTank.drawMe(g);
-		  for(int a = 0; a < tanks.size(); a++){
-          	tanks.get(a).drawMe(g);
-  	  }
+    	g.drawString("Bullet  count: " + bullets.size(), 40, 75);
+		
+		for (int a = 0; a < tanks.size(); a++) {
+			tanks.get(a).drawMe(g);
+		}
+		for (int a = 0; a < bullets.size(); a++) {
+			bullets.get(a).drawMe(g);
+		}
+		for (int a = 0; a < explodes.size(); a++) {
+			explodes.get(a).drawMe(g);
+		}
+		
 	}
     
 	private class PaintThread implements Runnable {

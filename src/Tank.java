@@ -2,8 +2,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
-import java.nio.file.DirectoryIteratorException;
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class Tank {
@@ -13,8 +13,9 @@ public class Tank {
     public static final int WIDTH = 50;
     public static final int HEIGHT = 50;
     private static final int SPEED = 5;
+    private int BulletNum;
     private boolean bePlayerTank; 
-    public  boolean live = true; 
+    private boolean live = true; 
     
     private boolean bL = false, bU = false, bR = false, bD = false;
     enum Direction { L, LU, U, RU, R, RD, D, LD, STOP};
@@ -22,9 +23,9 @@ public class Tank {
     Direction ptDir = Direction.R;
     
     ArrayList<Integer> oldKeyss = new ArrayList<Integer>();
-    ArrayList<Bullet> bullets = new ArrayList<Bullet>();
   
-	private  int BulletNum;
+  
+    private static Random r = new Random(); 
     public TankClient tc;
 	
 	public Tank(int tank_x, int tank_y, boolean bePlayerTank, TankClient tc) {
@@ -71,14 +72,9 @@ public class Tank {
 			break;
 	
 		}
+		move();
 	}
-		
 		else tc.tanks.remove(this);
-		
-	
-		for(int a =0; a < bullets.size(); a++){
-			bullets.get(a).drawMe(g);
-		}
 }	
 	
 	private void move(){
@@ -120,7 +116,11 @@ public class Tank {
 		if(tank_y < 30) tank_y = 30;
 		if(tank_x + WIDTH > TankClient.frameWidth - 5) tank_x = TankClient.frameWidth - WIDTH - 5;
 		if(tank_y + HEIGHT > TankClient.frameHeight - 5) tank_y = TankClient.frameHeight - HEIGHT - 5;
-	
+	    
+		if(!bePlayerTank){
+		Direction[] dire = Direction.values();
+		dir = dire[r.nextInt(dire.length)];
+		}
 	}
 	
 	public void keyReleased(KeyEvent e) {
@@ -220,7 +220,7 @@ public class Tank {
 				Bullet b = new Bullet(this, tc);
 				BulletNum++;
 				new Thread(b).start();
-				bullets.add(b);
+				tc.bullets.add(b);
 			    }
 	}
 	
@@ -257,7 +257,7 @@ public class Tank {
 		public void run(){
 			while (true) {
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
