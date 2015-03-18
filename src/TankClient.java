@@ -13,7 +13,7 @@ public class TankClient extends Frame {
 	Image offScreeenImage = null;
     public static final int frameWidth = 1200;
     public static final int frameHeight = 700;
-    Tank myTank = new Tank(30, 30, true, this);
+    Tank myTank = new Tank(40, 100, true, this);
     List<Tank> tanks = new ArrayList<Tank>();
     
 	public static void main(String[] args) {
@@ -75,6 +75,8 @@ public class TankClient extends Frame {
 	}
  
     public void paint(Graphics g) {
+    	g.drawString("Tank    conut: " + tanks.size(), 40, 60);
+    	g.drawString("Bullet  count: " + myTank.bullets.size(), 40, 75);
 		myTank.drawMe(g);
 		  for(int a = 0; a < tanks.size(); a++){
           	tanks.get(a).drawMe(g);

@@ -75,6 +75,7 @@ public class Tank {
 		
 		else tc.tanks.remove(this);
 		
+	
 		for(int a =0; a < bullets.size(); a++){
 			bullets.get(a).drawMe(g);
 		}

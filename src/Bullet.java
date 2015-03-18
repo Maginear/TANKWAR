@@ -109,6 +109,7 @@ public class Bullet implements Runnable{
 		for (int a = 0; a < tc.tanks.size(); a++) {
               if(this.isHitTank(tc.tanks.get(a))){
             	  this.live = false;
+            	  tank.bullets.remove(this);
             	  exp = new Explode(this, tc);
             	  return true;
               }
