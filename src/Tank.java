@@ -10,13 +10,15 @@ public class Tank {
 	
     public int tank_x = 50;
     public int tank_y = 50;
+    public int old_x = 50; 
+    public int old_y = 50; 
     public static final int WIDTH = 50;
     public static final int HEIGHT = 50;
     private static final int SPEED = 5;
     private int BulletNum;
     private int step = 0; 
     public boolean bePlayerTank; 
-    private boolean live = true; 
+    private boolean live = true;
     
     private boolean bL = false, bU = false, bR = false, bD = false;
     enum Direction { L, LU, U, RU, R, RD, D, LD, STOP};
@@ -27,6 +29,7 @@ public class Tank {
   
     private static Random r = new Random(); 
     public TankClient tc;
+    
 	
 	public Tank(int tank_x, int tank_y, boolean bePlayerTank, TankClient tc) {
 		this.tank_x = tank_x;
@@ -78,6 +81,8 @@ public class Tank {
 }	
 	
 	private void move(){
+		old_x = tank_x;
+		old_y = tank_y;
 		switch(dir){
 		case L:
 			tank_x -= SPEED;
@@ -126,6 +131,11 @@ public class Tank {
 		        step = r.nextInt(12) + 3;   
 			}
 			step--;
+		}
+		
+		if(isMeetTanks() || isMeetWall()){
+		     this.tank_x = this.old_x;
+		     this.tank_y = this.old_y;
 		}
 	}
 	
@@ -202,8 +212,8 @@ public class Tank {
 				LocalDirection();
 			
 			}
-	
-		move();
+			
+			 move();
 		
 		/*
 		if((Key == KeyEvent.VK_RIGHT)){
@@ -273,6 +283,7 @@ public class Tank {
 					if(r.nextInt(40) > 30)
 					fire();
 				}
+				
 			}
 		}
 	}
@@ -285,15 +296,29 @@ public class Tank {
    	  return new Rectangle(tank_x, tank_y, WIDTH, HEIGHT);
      }
 	 
-    /*public  boolean  isMeetTanks(){
-	
+	private boolean isMeetTanks() {
 		for (int a = 0; a < tc.tanks.size(); a++) {
-			if (this.getRect().intersects(tc.tanks.get(a).getRect())) {
-				return true;
-
+			Tank t = tc.tanks.get(a);
+			if (!this.bePlayerTank) {
+				if (t != this) {
+					if (this.getRect().intersects(t.getRect()) || this.getRect().intersects(tc.myTank.getRect())) {
+						return true;
+					}
+				}
+			} else {
+				if (this.getRect().intersects(t.getRect())) {
+					return true;
+				}
 			}
+
 		}
-		
-		 return false;
-	 }*/
+		return false;
+	}
+    
+    private boolean isMeetWall(){
+    	if(this.getRect().intersects(tc.wall.getRect())){
+    		return true;
+    	}
+    	return false;
+    }
 }

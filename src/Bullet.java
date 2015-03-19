@@ -76,7 +76,8 @@ public class Bullet implements Runnable {
 
 	public void drawMe(Graphics g) {
 		this.isHitTanks();
-
+        this.isHitWall();
+        
 		if (live) {
 			Color c = g.getColor();
 			if (tank.bePlayerTank) {
@@ -127,5 +128,16 @@ public class Bullet implements Runnable {
 			}
 			return false;
 		}
+	}
+	
+	public boolean isHitWall(){
+		if(this.getRect().intersects(tc.wall.getRect())){
+			this.live = false;
+			tank.tc.bullets.remove(this);
+			exp = new Explode(this, tc);
+			tc.explodes.add(exp);
+			return true;
+		}
+		return false;
 	}
 }

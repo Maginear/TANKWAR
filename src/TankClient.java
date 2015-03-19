@@ -13,8 +13,9 @@ public class TankClient extends Frame {
 	Image offScreeenImage = null;
     public static final int frameWidth = 1200;
     public static final int frameHeight = 700;
-    Tank myTank = new Tank(40, 100, true, this);
+    Wall wall;
     List<Tank> tanks = new ArrayList<Tank>();
+    Tank myTank = new Tank(40, 100, true, this);
     ArrayList<Bullet> bullets = new ArrayList<Bullet>();
     ArrayList<Explode> explodes = new ArrayList<Explode>();
     
@@ -24,11 +25,12 @@ public class TankClient extends Frame {
 	}
 	
 	private void launchFrame() {
+		wall = new Wall(this, 500, 150, 50, 450);
+		
 		for (int i = 0; i < 10; i++) {
 			tanks.add(new Tank((int) ((frameWidth - 5 - Tank.WIDTH) * Math.random()) + 5,
 					(int) ((frameHeight - 30 - Tank.HEIGHT)* Math.random() + 30) , false, this));
 		}
-		
 		this.setTitle("TankWar");
 		this.setLocation(50, 50);
 		this.setSize(frameWidth, frameHeight);
@@ -77,9 +79,9 @@ public class TankClient extends Frame {
  
     public void paint(Graphics g) {
     	myTank.drawMe(g);
-    	
-    	g.drawString("Tank    conut: " + tanks.size(), 40, 60);
-    	g.drawString("Bullet  count: " + bullets.size(), 40, 75);
+    	wall.drawMe(g);
+    	g.drawString("EnemyTank conut: " + tanks.size(), 40, 60);
+    	g.drawString("Bullet    count: " + bullets.size(), 40, 75);
 		
 		for (int a = 0; a < tanks.size(); a++) {
 			tanks.get(a).drawMe(g);
