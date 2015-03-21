@@ -1,15 +1,35 @@
+package tankWar;
 import java.awt.Color;
 import java.awt.Graphics;
 
-
+    /**
+     * 炮弹（Bullet）打中坦克或墙的时候产生的爆炸（Explode）。
+     * @author Magy
+     *
+     */
 public class Explode {
+	  
+	  /**
+	   * 爆炸动画绘制原点的坐标。
+	   */
       private int explode_x, explode_y;
-      Bullet b;
-      TankClient tc;
+      
+      private Bullet b;
+      private TankClient tc;
+      
+      /**
+       * 爆炸动画直径大小变化的数组。
+       */
       int[] diament = {3, 13, 15, 18, 25, 35, 20, 18, 13, 5, 2};
-      int step = 0;
+      
+      private int step = 0;
       private boolean live = true;
-    		  
+      
+      /**
+       * 初始化爆炸的位置。
+       * @param b   产生爆炸的炮弹
+       * @param tc  游戏窗口
+       */
       public Explode(Bullet b, TankClient tc){
     	  explode_x = b.bullet_x;
     	  explode_y = b.bullet_y;
@@ -17,6 +37,10 @@ public class Explode {
     	  this.tc = tc;
       }
       
+      /**
+       * 如果爆炸还没结束，绘制爆炸动画。
+       * @param g  画笔
+       */
       public void drawMe(Graphics g){
     	  if(!live) return;
     	  
