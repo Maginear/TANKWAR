@@ -266,6 +266,7 @@ static int bulletTest = 0;
 					tc.makeEnemyTank();
 					break;
 				case KeyEvent.VK_F2:
+					tc.TankBloods.remove(this.tb);
 					tc.myTank = new Tank(40, 100, true, tc);
 					break;
 				}

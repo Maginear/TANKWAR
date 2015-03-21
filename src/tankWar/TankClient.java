@@ -29,7 +29,7 @@ public class TankClient extends Frame {
 	
 	private Image offScreeenImage = null;
 	public Wall wall;
-	public Tank myTank = new Tank(40, 100, true, this); 
+	public Tank myTank = new Tank(70, 120, true, this); 
 	
 	/*
 	 * 声明了一个敌方AI坦克的集合，方便在对每一个敌方AI坦克引用
@@ -64,7 +64,6 @@ public class TankClient extends Frame {
 		this.setVisible(true);
 		this.setResizable(false);
 		this.setBackground(Color.green);
-
 		this.addKeyListener(new KeyMonitorPress());
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -125,8 +124,11 @@ public class TankClient extends Frame {
 	 * 	 
 	 */
 	public void paint(Graphics g) {
-		g.drawString("EnemyTank conut: " + tanks.size(), 40, 60);
-		g.drawString("Bullet    count: " + bullets.size(), 40, 75);
+		g.drawString("EnemyTank conut: " + tanks.size(), 40, 50);
+		g.drawString("Bullet    count: " + bullets.size(), 40, 65);
+		g.drawString("按F1增加20个敌人，按F2重新复活。", 40, 80);
+		g.drawString("按方向键进行八个方向移动，按空格键可发射炮弹。", 40, 95);
+		
 		wall.drawMe(g);
 		for (int a = 0; a < bullets.size(); a++) {
 			bullets.get(a).drawMe(g);
