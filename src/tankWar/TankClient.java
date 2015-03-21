@@ -127,7 +127,7 @@ public class TankClient extends Frame {
 		g.drawString("EnemyTank conut: " + tanks.size(), 40, 50);
 		g.drawString("Bullet    count: " + bullets.size(), 40, 65);
 		g.drawString("按F1增加20个敌人，按F2重新复活。", 40, 80);
-		g.drawString("按方向键进行八个方向移动，按空格键可发射炮弹。", 40, 95);
+		g.drawString("按方向键进行八个方向移动，按空格键可发射炮弹。", 40, 100);
 		
 		wall.drawMe(g);
 		for (int a = 0; a < bullets.size(); a++) {

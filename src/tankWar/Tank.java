@@ -267,7 +267,7 @@ static int bulletTest = 0;
 					break;
 				case KeyEvent.VK_F2:
 					tc.TankBloods.remove(this.tb);
-					tc.myTank = new Tank(40, 100, true, tc);
+					tc.myTank = new Tank(70, 120, true, tc);
 					break;
 				}
 				LocalDirection();
