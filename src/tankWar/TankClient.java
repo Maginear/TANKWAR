@@ -29,17 +29,17 @@ public class TankClient extends Frame {
 	
 	private Image offScreeenImage = null;
 	public Wall wall;
-	public Tank myTank = new Tank(70, 120, true, this); 
+	public TankImpl myTank = new TankImpl(70, 120, true, this); 
 	
 	/*
 	 * 声明了一个敌方AI坦克的集合，方便在对每一个敌方AI坦克引用
 	 * 实例化了创建玩家坦克对象
 	 * 声明了所有坦克的生命值以及发射的炮弹、爆炸的集合
 	 */
-	public List<Tank> tanks = new ArrayList<Tank>();               
-	public ArrayList<Bullet> bullets = new ArrayList<Bullet>();            
+	public List<TankImpl> tanks = new ArrayList<TankImpl>();               
+	public ArrayList<BulletImpl> bullets = new ArrayList<BulletImpl>();            
 	public ArrayList<Explode> explodes = new ArrayList<Explode>();        
-    public ArrayList<TankBlood> TankBloods = new ArrayList<TankBlood>();  
+    public ArrayList<TankBloodImpl> TankBloods = new ArrayList<TankBloodImpl>();  
     
     /**
      * 实例化坦克游戏窗口
@@ -93,10 +93,22 @@ public class TankClient extends Frame {
 	 * 在整个窗口范围内随机生成20个敌方AI坦克
 	 */
 	public void makeEnemyTank(){
+	    boolean isHit = false;
 		for (int i = 0; i < 20; i++) {
-			tanks.add(new Tank((int) ((frameWidth - 5 - Tank.WIDTH) * Math
-					.random()) + 5, (int) ((frameHeight - 30 - Tank.HEIGHT)
-					* Math.random() + 30), false, this));
+			 TankImpl t =  new TankImpl((int) ((frameWidth - 5 - TankImpl.WIDTH) * Math
+					.random()) + 5, (int) ((frameHeight - 30 - TankImpl.HEIGHT)
+					* Math.random() + 30), false, this);
+			 
+			 isHit = t.isMeetTanks() || t.isMeetWall();
+	         if(!isHit){
+	    	      tanks.add(t);
+	         }
+	         else{
+	        	 t.live = false;
+	        	 i--;
+	         }
+			
+			
 		}
 	}
     

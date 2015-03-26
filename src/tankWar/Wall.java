@@ -40,6 +40,6 @@ public class Wall {
 	
 	  
 	public Rectangle getRect(){
-	   	  return new Rectangle(wall_x - 10, wall_y, wall_Width + 10, wall_Height);
+	   	  return new Rectangle(wall_x - 10, wall_y +10, wall_Width + 10, wall_Height);
 	     }
 }

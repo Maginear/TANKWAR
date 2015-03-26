@@ -1,19 +1,22 @@
 package tankWar;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 
-public class Tank {
+public class TankImpl implements MoveAndDrawInterface{
 	
 	/**
 	 * 坦克的X坐标
 	 */
     public int tank_x = 50;
-    
 
 	/**
 	 * 坦克的X坐标
@@ -25,36 +28,63 @@ public class Tank {
 	/**
 	 * 坦克的宽度常量
 	 */
-    public static final int WIDTH = 50;
+    public static final int WIDTH = 30;
 
     /**
 	 * 坦克的高度常量
 	 */
-    public static final int HEIGHT = 50;
+    public static final int HEIGHT = 30;
     
     /**
 	 * 坦克的移动速度常量
 	 */
     private static final int SPEED = 5;
+    
     private int BulletNum;
     private int step = 0; 
     public boolean bePlayerTank; 
-    private boolean live = true;
+    public boolean live = true;
     public int life = 10;
-static int bulletTest = 0;
+//static int bulletTest = 0;
     
     private boolean bL = false, bU = false, bR = false, bD = false;    //将坦克的方向用枚举的方式形成集合，方便各个类规范使用。
-    enum Direction { L, LU, U, RU, R, RD, D, LD, STOP};
     
     Direction dir = Direction.STOP;
-    Direction ptDir = Direction.R;
+    Direction ptDir = Direction.L;
+    
+    private static Toolkit tk = Toolkit.getDefaultToolkit();
+    private static Image[] tankImages = null;
+    private static Map<String, Image> images = new HashMap<String, Image> ();
+    private static Random r = new Random();
+    
+    static {
+    	tankImages = new Image[]{
+    	tk.getImage(TankImpl.class.getClassLoader().getResource("Images/tankL.gif")),
+    	tk.getImage(TankImpl.class.getClassLoader().getResource("Images/tankLU.gif")),
+    	tk.getImage(TankImpl.class.getClassLoader().getResource("Images/tankU.gif")),
+    	tk.getImage(TankImpl.class.getClassLoader().getResource("Images/tankRU.gif")),
+    	tk.getImage(TankImpl.class.getClassLoader().getResource("Images/tankR.gif")),
+    	tk.getImage(TankImpl.class.getClassLoader().getResource("Images/tankRD.gif")),
+    	tk.getImage(TankImpl.class.getClassLoader().getResource("Images/tankD.gif")),
+    	tk.getImage(TankImpl.class.getClassLoader().getResource("Images/tankLD.gif"))
+    	};
+    	
+    	images.put("L", tankImages[0]);
+    	images.put("LU", tankImages[1]);
+    	images.put("U", tankImages[2]);
+    	images.put("RU", tankImages[3]);
+    	images.put("R", tankImages[4]);
+    	images.put("RD", tankImages[5]);
+    	images.put("D", tankImages[6]);
+    	images.put("LD", tankImages[7]);
+    }
+    
     
     ArrayList<Integer> oldKey = new ArrayList<Integer>();
-  
-    private static Random r = new Random(); 
+    
     public TankClient tc;
-    private boolean down = false;
-    TankBlood tb;
+    private TankBloodImpl tb;
+    
 	
     /**
      * 初始化坦克的位置，并开始限制坦克发射炮弹频率的线程MakeBullets
@@ -63,7 +93,7 @@ static int bulletTest = 0;
      * @param bePlayerTank 是否为玩家坦克
      * @param tc   游戏窗口
      */
-	public Tank(int tank_x, int tank_y, boolean bePlayerTank, TankClient tc) {
+	public TankImpl(int tank_x, int tank_y, boolean bePlayerTank, TankClient tc) {
 		this.tank_x = tank_x;
 		this.tank_y = tank_y;
 		this.bePlayerTank = bePlayerTank;
@@ -77,61 +107,58 @@ static int bulletTest = 0;
 	 * 否则将此炮弹移除Tanks集合，并不再重绘。
 	 * @param g 画笔
 	 */
-	public void drawMe(Graphics g){
+	public void drawMe(Graphics g) {
 		if (tb == null) {
-			tb = new TankBlood(this, tc);
+			tb = new TankBloodImpl(this, tc);
 			tc.TankBloods.add(tb);
 		}
 		
-		if(live) {
-	     	Color c = g.getColor();
-		    
-		    if(bePlayerTank)
-		    	g.setColor(Color.RED);
-	     	else
-	     		g.setColor(Color.blue);
-		
-		    g.fillOval(tank_x,tank_y, WIDTH, HEIGHT);
-	     	g.setColor(c);
-		
-		switch(ptDir){
-		case L:
-			g.drawLine(tank_x + Tank.WIDTH/2, tank_y + Tank.HEIGHT/2 , tank_x , tank_y + Tank.HEIGHT/2);
-			break;
-		case LU:
-			g.drawLine(tank_x + Tank.WIDTH/2, tank_y + Tank.HEIGHT/2 , tank_x , tank_y);
-			break;
-		case U:
-			g.drawLine(tank_x + Tank.WIDTH/2, tank_y + Tank.HEIGHT/2 , tank_x + Tank.WIDTH/2, tank_y);
-			break;
-		case RU:
-			g.drawLine(tank_x + Tank.WIDTH/2, tank_y + Tank.HEIGHT/2 , tank_x + Tank.WIDTH, tank_y);
-			break;
-		case R:
-			g.drawLine(tank_x + Tank.WIDTH/2, tank_y + Tank.HEIGHT/2 , tank_x + Tank.WIDTH , tank_y + Tank.HEIGHT/2);
-			break;
-		case RD:
-			g.drawLine(tank_x + Tank.WIDTH/2, tank_y + Tank.HEIGHT/2 , tank_x + Tank.WIDTH , tank_y + Tank.HEIGHT);
-			break;
-		case D:
-			g.drawLine(tank_x + Tank.WIDTH/2, tank_y + Tank.HEIGHT/2 , tank_x + Tank.WIDTH/2 , tank_y + Tank.HEIGHT);
-			break;
-		case LD:
-			g.drawLine(tank_x + Tank.WIDTH/2, tank_y + Tank.HEIGHT/2 , tank_x , tank_y + Tank.HEIGHT);
-			break;
-	
-		}
-		move();
-	}
-		else 	{
+		if (live) {
+			switch (ptDir) {
+			case L:
+				g.drawImage(images.get("L"), tank_x,
+						tank_y, null);
+				break;
+			case LU:
+				g.drawImage(images.get("LU"), tank_x,
+						tank_y, null);
+				break;
+			case U:
+				g.drawImage(images.get("U"), tank_x ,
+						tank_y, null);
+				break;
+			case RU:
+				g.drawImage(images.get("RU"), tank_x,
+						tank_y, null);
+				break;
+			case R:
+				g.drawImage(images.get("R"), tank_x ,
+						tank_y, null);
+				break;
+			case RD:
+				g.drawImage(images.get("RD"), tank_x,
+						tank_y, null);
+				break;
+			case D:
+				g.drawImage(images.get("D"), tank_x,
+						tank_y, null);
+				break;
+			case LD:
+				g.drawImage(images.get("LD"), tank_x,
+						tank_y, null);
+				break;
+			}
+			move();
+		} else {
 			tc.TankBloods.remove(tb);
 			tc.tanks.remove(this);
 		}
-}	
+	}
+
 	/**
 	 * 根据坦克的方向，让坦克在窗口边界内并不与其余坦克、墙发生碰撞的前提下前进。
 	 */
-	private void move(){
+	public void move(){
 		old_x = tank_x;
 		old_y = tank_y;
 		switch(dir){
@@ -267,7 +294,7 @@ static int bulletTest = 0;
 					break;
 				case KeyEvent.VK_F2:
 					tc.TankBloods.remove(this.tb);
-					tc.myTank = new Tank(70, 120, true, tc);
+					tc.myTank = new TankImpl(70, 120, true, tc);
 					break;
 				}
 				LocalDirection();
@@ -295,7 +322,7 @@ static int bulletTest = 0;
 	 */
 	private void fire() {
 		if (live && BulletNum <= 2) {
-			Bullet b = new Bullet(this, tc, ptDir);
+			BulletImpl b = new BulletImpl(this, tc, ptDir);
 			BulletNum++;
 			new Thread(b).start();
 			tc.bullets.add(b);
@@ -303,12 +330,12 @@ static int bulletTest = 0;
 	}
 	
 	public void fire(Direction dire){
-		Bullet b = new Bullet(this, tc, dire);
+		BulletImpl b = new BulletImpl(this, tc, dire);
 		new Thread(b).start();
 		tc.bullets.add(b);
 //		System.out.println(tc.bullets.size());
 //		System.out.println("BulletTest : "+bulletTest);
-		bulletTest++;
+//		bulletTest++;
 	}
 	
 	/**
@@ -336,23 +363,24 @@ static int bulletTest = 0;
 			} else if (bL && bU && !bR && !bD) {
 				dir = Direction.LU;
 			} else if (!bL && bU && !bR && !bD) {
-				dir = Direction.U;
+				dir = Direction.U; 
 			} else if (!bL && bU && bR && !bD) {
-				dir = Direction.RU;
+				dir = Direction.RU; 
 			} else if (!bL && !bU && bR && !bD) {
-				dir = Direction.R;
+				dir = Direction.R; 
 			} else if (!bL && !bU && bR && bD) {
 				dir = Direction.RD;
 			} else if (!bL && !bU && !bR && bD) {
-				dir = Direction.D;
+				dir = Direction.D; 
 			} else if (bL && !bU && !bR && bD) {
-				dir = Direction.LD;
+				dir = Direction.LD; 
 			}	
 		}
 		
 		if(dir != Direction.STOP){
 			ptDir = dir;
 		}
+		
 
 	}
 	
@@ -387,9 +415,9 @@ static int bulletTest = 0;
 	 * 判断当前坦克是否碰撞到了其他坦克。
 	 * @return boolean true则碰到了。
 	 */
-	private boolean isMeetTanks() {
+	public boolean isMeetTanks() {
 		for (int a = 0; a < tc.tanks.size(); a++) {
-			Tank t = tc.tanks.get(a);
+			TankImpl t = tc.tanks.get(a);
 			if (!this.bePlayerTank) {
 				if (t != this) {
 					if (this.getRect().intersects(t.getRect()) || this.getRect().intersects(tc.myTank.getRect())) {
@@ -410,7 +438,7 @@ static int bulletTest = 0;
 	 * 判断当前坦克是否碰撞到了墙。
 	 * @return boolean true则碰到了。
 	 */
-    private boolean isMeetWall(){
+    public boolean isMeetWall(){
     	if(this.getRect().intersects(tc.wall.getRect())){
     		return true;
     	}

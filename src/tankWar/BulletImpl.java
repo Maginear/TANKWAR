@@ -1,23 +1,25 @@
 package tankWar;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 
 /**
  * 坦克发出的炮弹。
  * @author lx
  *
  */
-public class Bullet implements Runnable {
+public class BulletImpl implements Runnable, MoveAndDrawInterface {
 	/**
 	 * 发出炮弹的坦克。
 	 */
-	public Tank tank;
+	public TankImpl tank;
 	
 	/**
 	 * 发出炮弹的坦克的方向 。
 	 */
-	public Tank.Direction dir;
+	public Direction ptDir;
 	
 	public TankClient tc;
 	
@@ -46,9 +48,21 @@ public class Bullet implements Runnable {
 	 */
 	private static final int SPEED = 3;
 	
+	private static Toolkit tk = Toolkit.getDefaultToolkit();
+	private static Image[] imgs = {
+		tk.getImage(BulletImpl.class.getClassLoader().getResource("images/missileL.gif")),
+		tk.getImage(BulletImpl.class.getClassLoader().getResource("images/missileLU.gif")),
+		tk.getImage(BulletImpl.class.getClassLoader().getResource("images/missileU.gif")),
+		tk.getImage(BulletImpl.class.getClassLoader().getResource("images/missileRU.gif")),
+		tk.getImage(BulletImpl.class.getClassLoader().getResource("images/missileR.gif")),
+		tk.getImage(BulletImpl.class.getClassLoader().getResource("images/missileRD.gif")),
+		tk.getImage(BulletImpl.class.getClassLoader().getResource("images/missileD.gif")),
+		tk.getImage(BulletImpl.class.getClassLoader().getResource("images/missileLD.gif")),
+	};
+	private int bulletImages = 0;
+	
 	private boolean live = true;
 	private Explode exp;
-	enum Direction { L, LU, U, RU, R, RD, D, LD, STOP};
 	int hitwall = 0;
 	int hittank = 0;
 	int outofframe = 0;
@@ -59,13 +73,14 @@ public class Bullet implements Runnable {
     * @param tc          游戏窗口
     * @param dir    方向
     */
-	public Bullet(Tank tank, TankClient tc, Tank.Direction dir) {
-		this.dir = dir;	
+	public BulletImpl(TankImpl tank, TankClient tc, Direction ptDir) {
+		this.ptDir = ptDir;	
 		this.tank = tank;
 		this.tc = tc;
 		bullet_x = tank.tank_x;
 		bullet_y = tank.tank_y;
 	}
+
 
 	public void run() {
 		while (live) {
@@ -74,42 +89,50 @@ public class Bullet implements Runnable {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			bulletMove();
+			move();
 		}
 	}
 
 	/**
 	 * 根据方向移动炮弹，若炮弹已离开窗口范围则将此炮弹移除Bullets集合，并不再重绘。
 	 */
-	private void bulletMove() {
-		switch (dir) {
+	public void move() {
+		switch (ptDir) {
 		case L:
 			bullet_x -= SPEED;
+			bulletImages = 0; 
 			break;
 		case LU:
 			bullet_x -= SPEED;
 			bullet_y -= SPEED;
+			bulletImages = 1;
 			break;
 		case U:
 			bullet_y -= SPEED;
+			bulletImages = 2;
 			break;
 		case RU:
 			bullet_x += SPEED;
 			bullet_y -= SPEED;
+			bulletImages = 3;
 			break;
 		case R:
 			bullet_x += SPEED;
+			bulletImages = 4;
 			break;
 		case RD:
 			bullet_x += SPEED;
 			bullet_y += SPEED;
+			bulletImages = 5;
 			break;
 		case D:
 			bullet_y += SPEED;
+			bulletImages = 6;
 			break;
 		case LD:
 			bullet_x -= SPEED;
 			bullet_y += SPEED;
+			bulletImages = 7;
 			break;
 		case STOP:
 			break;
@@ -131,12 +154,14 @@ public class Bullet implements Runnable {
 		if (live) {
 			Color c = g.getColor();
 			if (tank.bePlayerTank) {
-				g.setColor(Color.YELLOW);
+				g.drawImage(imgs[bulletImages], bullet_x + TankImpl.WIDTH / 2 , 
+						bullet_y + TankImpl.HEIGHT / 2  , null);
 			} else {
 				g.setColor(Color.red);
+				g.fillOval(bullet_x + TankImpl.WIDTH / 2, bullet_y + TankImpl.HEIGHT / 2,
+						WIDTH, HEIGHT);
 			}
-			g.fillOval(bullet_x + Tank.WIDTH / 2, bullet_y + Tank.HEIGHT / 2,
-					WIDTH, HEIGHT);
+			
 			g.setColor(c);
 		} 
 	}
@@ -150,7 +175,7 @@ public class Bullet implements Runnable {
 	 * @param t         被测试坦克。
 	 * @return boolean  返回true则打中了。
 	 */
-	private boolean isHitTank(Tank t) {
+	private boolean isHitTank(TankImpl t) {
 		if (this.getRect().intersects(t.getRect())) {
 			if(tank.bePlayerTank)
 			    t.life -= 5;

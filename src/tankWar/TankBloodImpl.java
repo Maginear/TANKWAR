@@ -7,12 +7,12 @@ import java.awt.Graphics;
  * @author Magy
  *
  */
-public class TankBlood {
-	   private Tank t ;
+public class TankBloodImpl implements MoveAndDrawInterface{
+	   private TankImpl t ;
 	   private TankClient tc;
 	   
 	  
-       public TankBlood(Tank t, TankClient tc){
+       public TankBloodImpl(TankImpl t, TankClient tc){
     	   this.t =t;
     	   this.tc = tc;
        }
@@ -26,5 +26,9 @@ public class TankBlood {
 		g.setColor(Color.white);
 	    g.drawRect(t.tank_x, t.tank_y -15, 50, 10);
 		g.setColor(c);
+	}
+
+	@Override
+	public void move() {
 	}
 }
