@@ -167,7 +167,7 @@ public class BulletImpl implements Runnable, MoveAndDrawInterface {
 	}
 
 	private Rectangle getRect() {
-		return new Rectangle(bullet_x, bullet_y, WIDTH, HEIGHT);
+		return new Rectangle(bullet_x, bullet_y, imgs[0].getWidth(null), imgs[0].getHeight(null));
 	}
 
 	/**

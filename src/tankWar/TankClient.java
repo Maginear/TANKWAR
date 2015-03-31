@@ -7,8 +7,10 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * 
@@ -30,7 +32,8 @@ public class TankClient extends Frame {
 	private Image offScreeenImage = null;
 	public Wall wall;
 	public TankImpl myTank = new TankImpl(70, 120, true, this); 
-	
+	public Properties prop = new Properties();
+
 	/*
 	 * 声明了一个敌方AI坦克的集合，方便在对每一个敌方AI坦克引用
 	 * 实例化了创建玩家坦克对象
@@ -39,7 +42,9 @@ public class TankClient extends Frame {
 	public List<TankImpl> tanks = new ArrayList<TankImpl>();               
 	public ArrayList<BulletImpl> bullets = new ArrayList<BulletImpl>();            
 	public ArrayList<Explode> explodes = new ArrayList<Explode>();        
-    public ArrayList<TankBloodImpl> TankBloods = new ArrayList<TankBloodImpl>();  
+    public ArrayList<TankBloodImpl> TankBloods = new ArrayList<TankBloodImpl>();
+    
+    
     
     /**
      * 实例化坦克游戏窗口
@@ -57,7 +62,6 @@ public class TankClient extends Frame {
 	 */
 	private void launchFrame() {
 		wall = new Wall(this, 500, 150, 50, 450);
-        makeEnemyTank();
 		this.setTitle("TankWar");
 		this.setLocation(50, 50);
 		this.setSize(frameWidth, frameHeight);
@@ -71,6 +75,8 @@ public class TankClient extends Frame {
 			}
 		});
 		new Thread(new PaintThread()).start();
+		
+		 makeEnemyTank();
 	}
 
 	/**
@@ -93,8 +99,9 @@ public class TankClient extends Frame {
 	 * 在整个窗口范围内随机生成20个敌方AI坦克
 	 */
 	public void makeEnemyTank(){
+		int initEnemyTank = Integer.parseInt(PropertyManager.getProperty("initEnemyTank"));
 	    boolean isHit = false;
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < initEnemyTank; i++) {
 			 TankImpl t =  new TankImpl((int) ((frameWidth - 5 - TankImpl.WIDTH) * Math
 					.random()) + 5, (int) ((frameHeight - 30 - TankImpl.HEIGHT)
 					* Math.random() + 30), false, this);

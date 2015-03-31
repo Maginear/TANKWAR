@@ -408,7 +408,7 @@ public class TankImpl implements MoveAndDrawInterface{
 	}
 	
 	public Rectangle getRect(){
-   	  return new Rectangle(tank_x, tank_y, WIDTH, HEIGHT);
+   	  return new Rectangle(tank_x, tank_y,tankImages[0].getWidth(null), tankImages[0].getHeight(null));
      }
 	 
 	/**
